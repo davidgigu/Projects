@@ -1,0 +1,357 @@
+---
+title: "Exploratory Data Analysis and Data Visualisation of policing dataset from Dallas, Texas"
+output: html_document
+---
+
+```{r setup, include=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE,warning = FALSE,message = FALSE)
+#importing the required libraries
+library("caret")
+library("dplyr")
+library("cleandata")
+library ("caTools")
+library ("readr")
+library("plotly")
+library("forcats")
+library("ggplot2")
+library("gridExtra")
+library("leaflet")
+library("ggridges")
+library("lubridate") 
+```
+
+## Introduction
+
+The data science industry has seen huge developments in recent times. Data is being used for various purposes. A very important part of Data science is data analysis and visualisation. Exploratory Data analysis and Data Visualisation can lead to very useful insights. Only by analyzing data and visualising it, we can use it efficiently for any purpose. The aim of this assignment is to do analysis and visualisation of the policing dataset from Dallas, Texas in 2016. It is necessary to interpret the findings and results.
+
+## The Data
+
+
+The data set is the policing dataset from Dallas, Texas in 2016.
+
+It contains 2271 rows and 50 columns. It contains data about incidents that happened in the area. The features mainly describe, the police officer that was involved, the subject involved in the incident, the place where the incident happened and what the outcome of the incident was, like did arrest happen, did the officer have to use force,etc.
+
+
+```{r}
+#Reading the dataset
+Dataset <- read_csv('Dataset.csv',show_col_types = FALSE)
+Dataset <- Dataset[-c(1), ]
+```
+
+
+
+```{r}
+#Removing rows with Null and Unknown values for these columns
+Dataset=Dataset[!(Dataset$SUBJECT_GENDER=="NULL"|Dataset$SUBJECT_GENDER=="Unknown"), ]
+Dataset=Dataset[!(Dataset$SUBJECT_RACE=="NULL"), ]
+Dataset=Dataset[!(Dataset$INCIDENT_REASON=="NULL"), ]
+```
+
+
+## Visualising the data
+
+
+
+
+```{r}
+#Drawing various plots
+p=ggplot(Dataset, aes(OFFICER_GENDER,fill=OFFICER_GENDER))+ggtitle("Gender of officers:")+ylab("COUNT")+theme_bw()+geom_bar(colour="black")+scale_fill_brewer(palette="Set1")+theme(legend.position="none")
+ggplotly(p)
+```
+
+
+We can see that most of the officers are male, with the number of female officers less than 25% of the male officers.
+
+
+
+
+<br />
+<br />
+<br />
+
+
+
+```{r}
+p=ggplot(Dataset, aes(OFFICER_RACE,fill=OFFICER_RACE))+ggtitle("Race of officers:")+ylab("COUNT")+theme_bw ()+geom_bar(colour="black")+scale_fill_brewer(palette="Dark2")+theme(legend.position="none")
+ggplotly(p)
+```
+
+
+As seen from the graph, White officers constitute the major portion of the officers, followed by Hispanic, Black and Asian officers.
+
+
+
+<br />
+<br />
+<br />
+
+
+
+
+```{r}
+p=ggplot(Dataset, aes(OFFICER_RACE))+ggtitle("Officers gender in each race:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=OFFICER_GENDER),position = "dodge",colour="black") +scale_fill_brewer(palette="Set1")
+ggplotly(p)
+
+```
+The bargraph above indicates the number of male and female officers in each race. We can see that in all races the number of female officers is less than male officers.
+<br /><br /><br />
+
+
+
+
+```{r}
+p=ggplot(Dataset, aes(OFFICER_RACE))+ggtitle("Officers injury in each race:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=OFFICER_INJURY),position = "dodge",colour="black") +scale_fill_brewer(palette="Blues")
+
+q=ggplot(Dataset, aes(OFFICER_GENDER))+ggtitle("Officers injury in each gender:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=OFFICER_INJURY),position = "dodge",colour="black") +scale_fill_brewer(palette="Greens")
+
+grid.arrange(p,q)
+```
+
+The two bargraphs indicate the number of times the officer got injured with respect to race and gender respectively. We can see that in the case of all races, the officer got injured lesser number of times. Same is the case with both genders.
+<br /><br /><br />
+
+
+
+
+
+```{r}
+p=ggplot(Dataset, aes(SUBJECT_GENDER,fill=SUBJECT_GENDER))+ggtitle("Gender of subjects:")+ylab("COUNT")+theme_bw()+geom_bar(colour="black")+scale_fill_brewer(palette="Set1")+theme(legend.position="none")
+ggplotly(p)
+```
+
+From the bargraph above, we can see that like the case with officers, the number of female subjects is less than the number of male subjects.
+<br /><br /><br />
+
+
+
+
+
+
+
+```{r}
+p=ggplot(Dataset, aes(SUBJECT_RACE,fill=SUBJECT_RACE))+ggtitle("Race of subjects:")+ylab("COUNT")+theme_bw()+geom_bar(colour="black")+scale_fill_brewer(palette="Dark2")+theme(legend.position="none")
+ggplotly(p)
+```
+
+From this graph, it is clear that most of the subjects belonged to the Black race, followed by Hispanic and then White. American Ind and Asian subjects are very less.
+<br /><br /><br />
+
+
+
+
+```{r}
+p=ggplot(Dataset, aes(SUBJECT_RACE))+ggtitle("Subjects gender in each race:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=SUBJECT_GENDER),position = "dodge",colour="black")+scale_fill_brewer(palette="Set1")
+ggplotly(p)
+```
+
+We can see that in Black, Hispanic and White races, the number of male subjects is far more than female subjects. American Ind and Asian races have only male subjects in this dataset. 
+<br /><br /><br />
+
+
+
+
+
+```{r}
+p=ggplot(Dataset, aes(SUBJECT_RACE))+ggtitle("Officers race for different subject races:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=OFFICER_RACE),colour="black")+scale_fill_brewer(palette="Dark2")
+ggplotly(p)
+```
+This graph shows the proportion of the involved officers race in each of the subject races. In the case of Black, Hispanic and White races, most of the involved officers were from White race.
+<br /><br /><br />
+
+
+
+
+```{r}
+p=ggplot(Dataset, aes(SUBJECT_GENDER))+ggtitle("Officers gender for different subject genders:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=OFFICER_GENDER),position = "dodge",colour="black")+scale_fill_brewer(palette="Set1")
+ggplotly(p)
+```
+This graph shows the proportion of the involved officers gender in the case of both male and female subjects. In the case of both male and female subjects, most of the involved officers were male.
+<br /><br /><br />
+```{r}
+p=ggplot(Dataset, aes(SUBJECT_RACE))+ggtitle("Subject injury in each race:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=SUBJECT_INJURY),position = "dodge",colour="black") +scale_fill_brewer(palette="Blues")
+
+q=ggplot(Dataset, aes(SUBJECT_GENDER))+ggtitle("Subject injury in each gender:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=SUBJECT_INJURY),position = "dodge",colour="black") +scale_fill_brewer(palette="Greens")
+
+grid.arrange(p,q)
+```
+
+The two bargraphs indicate the number of times the subject got injured with respect to race and gender respectively. We can see that in the case of all races, the subject got injured lesser number of times. Same is the case with both genders.
+<br /><br /><br />
+
+```{r}
+p=ggplot(Dataset, aes(SUBJECT_RACE))+ggtitle("Arrests in each subject race:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=SUBJECT_WAS_ARRESTED),position = "dodge",colour="black") +scale_fill_brewer(palette="Blues")
+
+q=ggplot(Dataset, aes(SUBJECT_GENDER))+ggtitle("Arrests in each subject gender:")+ylab("COUNT")+theme_bw()+geom_bar(aes(fill=SUBJECT_WAS_ARRESTED),position = "dodge",colour="black") +scale_fill_brewer(palette="Greens")
+
+grid.arrange(p,q)
+```
+
+The two bargraphs indicate the number of times the subject got arrested with respect to race and gender respectively. We can see that in the case of all races, the subject got arrested more number of times. Same is the case with both genders.
+<br /><br /><br />
+
+```{r}
+#Creating a new column time of day which contain data about what time of the day it is
+Dataset$INCIDENT_TIME=as.POSIXct(strptime(Dataset$INCIDENT_TIME,"%H:%M"),"UTC")
+Dataset$TIMEOFDAY="not defined"
+
+x=as.POSIXct(strptime(c("000000","050000","110000","160000","190000","235959"),
+                      "%H%M%S"),"UTC")
+labs=c("night","morning","afternoon","evening","night")
+Dataset$TIMEOFDAY=labs[findInterval(Dataset$INCIDENT_TIME,x)]
+Dataset=Dataset[!(is.na(Dataset$TIMEOFDAY)), ]
+```
+
+
+
+```{r}
+p <- Dataset %>%
+  mutate(TIMEOFDAY = fct_relevel(TIMEOFDAY, 
+            "morning", "afternoon", "night")) %>%
+  ggplot( aes(TIMEOFDAY,fill=TIMEOFDAY))+ylab("COUNT")+theme_bw()+geom_bar(colour="black")+scale_fill_brewer(palette="Greys")+theme(legend.position="none")+ggtitle("Incidents at different times of the day:")
+ggplotly(p)
+```
+The bargraph above show the incident count at different times during the day, namely morning, afternoon and night. Surprisingly no incident happened during evening so we do not have a bar for evening. It is clearly seen that, most incidents occurred in the morning, followed by night. The least number of incidents occurred in the afternoon.
+
+<br /><br /><br />
+
+
+
+
+```{r}
+#Creating a column that contain the month when the incident occurred
+Dataset$INCIDENT_DATE=parse_date_time(Dataset$INCIDENT_DATE, orders = c('mdy', 'dmy'))
+Dataset$INCIDENT_MONTH=months(Dataset$INCIDENT_DATE)
+p <- Dataset %>%
+  mutate(INCIDENT_MONTH = fct_relevel(INCIDENT_MONTH, 
+            "January", "February", "March", "April","May","June","July","August","September","October","November","December")) %>%
+  ggplot( aes(INCIDENT_MONTH))+ylab("COUNT")+theme_bw()+geom_bar(fill="#9BE396",colour="black")+coord_flip()+ggtitle("Incidents in different months:")
+ggplotly(p)
+```
+
+This graph shows the incident count in different months of the year. It can be clearly seen that most incidents happened in the month of March and the least number of incidents happened in December.
+
+<br /><br /><br />
+
+
+```{r}
+p=ggplot(Dataset, aes(INCIDENT_REASON))+ggtitle("Different incident reasons:")+ylab("COUNT")+theme_bw()+geom_bar(fill="#4D5CCD",colour="black")+coord_flip()
+ggplotly(p)
+```
+This graph shows the incident count with respect to different reasons for the incident. 'Arrest' was the most common reason and 'Accidental Discharge' was the least common reason.
+<br /><br /><br />
+
+```{r}
+#Creating a column which contains the final value of force effective
+Dataset$FORCE_EFFECTIVE=strsplit(Dataset$FORCE_EFFECTIVE,", ")
+Dataset$FORCE_EFFECTIVE_FINAL=sapply(Dataset$FORCE_EFFECTIVE, tail, 1 )
+
+p=ggplot(Dataset, aes(FORCE_EFFECTIVE_FINAL,fill=FORCE_EFFECTIVE_FINAL))+ggtitle("Force was effective?")+xlab("FORCE_EFFECTIVE")+ylab("COUNT")+theme_bw()+geom_bar(colour="black")+scale_fill_brewer(palette="Blues")+theme(legend.position="none")
+ggplotly(p)
+```
+This graph indicates the number of incidents where the force used was effective. If multiple forces were used, the result of the most recent force was considered. In most cases, the used force was effective. In lesser number of cases, there was ineffectiveness for the force and in even lesser number of cases, there was limited effectiveness.
+
+<br /><br /><br />
+
+```{r}
+#Converting the years on force column to numeric
+Dataset$OFFICER_YEARS_ON_FORCE <- as.numeric(as.character(Dataset$OFFICER_YEARS_ON_FORCE))
+p= ggplot(Dataset, aes(x=OFFICER_YEARS_ON_FORCE))+ggtitle("Officers experience:") +geom_density(kernel="gaussian",fill="#75A782")
+ggplotly(p)
+```
+
+The above density plot show the density distribution of the number of years on the force for the officers. It can be seen that most of the officers have less than 5 years experience. There are very less number of officers with above 30 years experience. The graph rises slightly at approximately 7 years and 27 years indicating slightly larger number of officers at this point.
+<br /><br /><br />
+
+
+```{r}
+p=ggplot(Dataset, aes(x=OFFICER_GENDER,y=OFFICER_YEARS_ON_FORCE,fill=OFFICER_GENDER))+ggtitle("Officer experience based on gender(Boxplot):") + geom_boxplot()+scale_fill_brewer(palette="Pastel1")+theme(legend.position="none")
+ggplotly(p)
+```
+The above plots are box plots of the years on force based on gender. A boxplot is used to locate outliers, which are located outside the whiskers of the boxplot. It also displays summary statistics when hovered over. Here we can see outliers in the case of both male and female officers.
+<br /><br /><br />
+```{r}
+p=ggplot(Dataset, aes(x=OFFICER_RACE,y=OFFICER_YEARS_ON_FORCE,fill=OFFICER_RACE))+ggtitle("Officer experience based on race(Boxplot):") + geom_boxplot()+scale_fill_brewer(palette="Pastel1")+theme(legend.position="none")
+ggplotly(p)
+```
+
+
+The above plots are box plots of the years on force based on race. Here we can see outliers in the case of officers who belong to the races Black, Hispanic and White. There are no outliers in the case of other races. This is beacause there are very less officers from other races.
+
+
+<br /><br /><br />
+
+
+
+
+```{r}
+p=ggplot(Dataset, aes(x=OFFICER_GENDER,y=OFFICER_YEARS_ON_FORCE,fill=OFFICER_GENDER))+ggtitle("Officer experience based on gender(Violin plot):") + geom_violin()+scale_fill_brewer(palette="Pastel1")+theme(legend.position="none")
+ggplotly(p)
+```
+The above plots are violin plots of the years on force based on gender. Violin plots are used to visualize the distribution of numeric data and the density of each variable. Here we can see similar distribution for male and female officers across different years on force, except for maybe just above 25 years where the density of male officers is slightly more.
+<br /><br /><br />
+
+
+
+
+```{r}
+p=ggplot(Dataset, aes(x=OFFICER_RACE,y=OFFICER_YEARS_ON_FORCE,fill=OFFICER_RACE))+ggtitle("Officer experience based on race(Violin plot):") + geom_violin()+scale_fill_brewer(palette="Pastel1")+theme(legend.position="none")
+ggplotly(p)
+```
+The above plots are violin plots for years on force based on officer race. It is seen that officers of the White and Hispanic race have similar distribution while other races have different distributions.
+<br /><br /><br />
+```{r}
+#Removing row with missing values for latitude and longitude and converting the rest to #numeric
+Dataset=Dataset[!(is.na(Dataset$LOCATION_LATITUDE)), ]
+Dataset=Dataset[!(is.na(Dataset$LOCATION_LONGITUDE)), ]
+Dataset$LOCATION_LATITUDE <- as.numeric(as.character(Dataset$LOCATION_LATITUDE))
+Dataset$LOCATION_LONGITUDE <- as.numeric(as.character(Dataset$LOCATION_LONGITUDE))
+```
+
+
+
+
+
+A map showing the places where the incident happened for male and female subjects:
+
+```{r}
+#Drawing maps
+map<-leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = Dataset[Dataset$SUBJECT_GENDER=="Male",], group = "Male",lng=~LOCATION_LONGITUDE,lat=~LOCATION_LATITUDE,color="blue")%>%
+  addCircleMarkers(data = Dataset[Dataset$SUBJECT_GENDER=="Female",], group = "Female",lng=~LOCATION_LONGITUDE,lat=~LOCATION_LATITUDE,color="red")
+map%>%  addLayersControl(
+    overlayGroups = c("Male","Female"),
+    options = layersControlOptions(collapsed = TRUE))  
+```
+The map shows that both male and female subjects are distributed across the area.
+<br /><br /><br />
+A map showing the places where the incident happened for subjects of different races:
+
+```{r}
+map<-leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = Dataset[Dataset$SUBJECT_RACE=="White",], group = "White",lng=~LOCATION_LONGITUDE,lat=~LOCATION_LATITUDE,color="white")%>%
+  addCircleMarkers(data = Dataset[Dataset$SUBJECT_RACE=="Black",], group = "Black",lng=~LOCATION_LONGITUDE,lat=~LOCATION_LATITUDE,color="black")%>%
+  addCircleMarkers(data = Dataset[Dataset$SUBJECT_RACE=="Hispanic",], group = "Hispanic",lng=~LOCATION_LONGITUDE,lat=~LOCATION_LATITUDE,color="brown")
+map%>%  addLayersControl(
+    overlayGroups = c("White","Black","Hispanic"),
+    options = layersControlOptions(collapsed = TRUE))  
+```
+This map shows that the subjects of different races are distributed across the area.
+<br /><br /><br />
+
+A map showing the places where the incident happened and the subject was arrested or not:
+
+```{r}
+map<-leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = Dataset[Dataset$SUBJECT_WAS_ARRESTED=="Yes",], group = "Yes",lng=~LOCATION_LONGITUDE,lat=~LOCATION_LATITUDE,color="red")%>%
+  addCircleMarkers(data = Dataset[Dataset$SUBJECT_WAS_ARRESTED=="No",], group = "No",lng=~LOCATION_LONGITUDE,lat=~LOCATION_LATITUDE,color="green")
+map%>%  addLayersControl(
+    overlayGroups = c("Yes","No"),
+    options = layersControlOptions(collapsed = TRUE)) 
+```
+This map shows that the subjects whether arrested or not  are distributed across the area.
+
+## Conclusion
+The data required some preprocessing and some new features were introduced. Missing values in the data were handled. Various plots were done on the data. Bargraphs, stacked bargraphs, multiple bargraphs for the same discrete value, density plots, violin plots, box plots and maps were done. Some interesting observations were obtained from these plots. The number of females is less than males in the case of officers and subjects. Officers from the White race are the highest in number. In the case of subjects, the largest number was from Black race. The officers and subjects from American Ind and Asian races are less in number when compared to other races. It was also observed that the chances of either the officer or the subject getting injured was less.Although the chance of the  subject getting arrested is high. Most incidents happened in the morning and less in the afternoon. Most incidents happened in the month of March and the least in December. The officers with above 30 years experience are very less in number. Most officers have less than 5 years experience. The experience feature is evenly distributed among male and female officers. Same is the case with officers from the White and Hispanic race.  
