@@ -1,0 +1,15 @@
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\bin\Debug\net6.0\Inventory Management using CSharp.exe
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\bin\Debug\net6.0\Inventory Management using CSharp.deps.json
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\bin\Debug\net6.0\Inventory Management using CSharp.runtimeconfig.json
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\bin\Debug\net6.0\Inventory Management using CSharp.dll
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\bin\Debug\net6.0\Inventory Management using CSharp.pdb
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\Inventory Management using CSharp.csproj.AssemblyReference.cache
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\Inventory Management using CSharp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\Inventory Management using CSharp.AssemblyInfoInputs.cache
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\Inventory Management using CSharp.AssemblyInfo.cs
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\Inventory Management using CSharp.csproj.CoreCompileInputs.cache
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\Inventory Management using CSharp.dll
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\refint\Inventory Management using CSharp.dll
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\Inventory Management using CSharp.pdb
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\Inventory Management using CSharp.genruntimeconfig.cache
+C:\Users\david\Documents\GitHub\Projects\Inventory Management using CSharp\Inventory Management using CSharp\obj\Debug\net6.0\ref\Inventory Management using CSharp.dll
